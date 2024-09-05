@@ -1,98 +1,6 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   microshell.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: exam <marvin@42.fr>                        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/13 13:02:11 by exam              #+#    #+#             */
-/*   Updated: 2023/06/13 14:22:24 by exam             ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#include "microshell.h"
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-
-// /-/ BASIC UTILS /-/ //
-
-int	ft_strlen(char *str)
-{
-	int	i = 0;
-
-	while (str[i] != '\0')
-		i++;
-	return (i);
-}
-
-void	ft_putstr_fd(char *str, int fd)
-{
-	int	i = 0;
-
-	while (str[i] != '\0')
-	{
-		write(fd, &str[i], 1);
-		i++;
-	}
-}
-
-char	*ft_strdup(char *s1)
-{
-	int		i = 0;
-	char	*str;
-
-	str = malloc(sizeof(char) * (ft_strlen(s1) + 1));
-	if (!str)
-	{
-		ft_putstr_fd("error: fatal\n", 2);
-		exit(1);
-	}
-	while (s1[i] != '\0')
-	{
-		str[i] = s1[i];
-		i++;
-	}
-	str[i] = '\0';
-	return (str);
-}
-
-void	ft_free_fds(int **thing)
-{
-	int	i = 0;
-
-	while (thing[i] != NULL)
-	{
-		free(thing[i]);
-		i++;
-	}
-	free(thing);
-}
-
-void	ft_free_tab(char **thing)
-{
-	int	i = 0;
-
-	while (thing[i] != NULL)
-	{
-		free(thing[i]);
-		i++;
-	}
-	free(thing);
-}
-
-// /-/ UTILS /-/ //
-
-void	ft_error(void)
-{
-	ft_putstr_fd("error: fatal\n", 2);
-	exit(1);
-}
-
-int	**ft_create_fds(char **str)
+int	**ft_create_fds(const char **str)
 {
 	int		i = 0;
 	int		count = 0;
@@ -124,7 +32,7 @@ int	**ft_create_fds(char **str)
 	return (fds);
 }
 
-char	**ft_create_args(char **str)
+char	**ft_create_args(const char **str)
 {
 	int		i = 0;
 	char	**args;
@@ -146,26 +54,6 @@ char	**ft_create_args(char **str)
 	return (args);
 }
 
-void	ft_cd(char **args)
-{
-	int	i = 0;
-
-	while (args[i] != NULL && strcmp(args[i], ";") != 0)
-		i++;
-	if (i != 2)
-		ft_putstr_fd("error: cd: bad arguments\n", 2);
-	else
-	{
-		i = chdir(args[1]);
-		if (i == -1)
-		{
-			ft_putstr_fd("error: cd: cannot change directory to ", 2);
-			ft_putstr_fd(args[1], 2);
-			ft_putstr_fd("\n", 2);
-		}
-	}
-}
-
 void	ft_exec_cmd(char **args, char **envp)
 {
 	int		i = 0;
@@ -185,7 +73,7 @@ void	ft_exec_cmd(char **args, char **envp)
 	}
 }
 
-void	ft_execute(char **args, char **envp)
+void	ft_execute(const char **args, char **envp)
 {
 	int		i = 0;
 	int		j = 0;
@@ -237,22 +125,4 @@ void	ft_execute(char **args, char **envp)
 		while (waitpid(-1, NULL, WUNTRACED) != -1)
 			;
 	}
-}
-
-int main(int argc, char **argv, char **envp)
-{
-	int	i = 1;
-
-	if (argc <= 1)
-		return (0);
-	while (argv[i] != NULL)
-	{
-		while (argv[i] != NULL && strcmp(argv[i], ";") == 0)
-			i++;
-		if (argv[i] != NULL)
-			ft_execute(argv + i, envp);
-		while (argv[i] != NULL && strcmp(argv[i], ";") != 0)
-			i++;
-	}
-	return (0);
 }
