@@ -6,11 +6,11 @@
 
 NAME = microshell
 
-SRCS = main.c \
-	microshell.c \
-	cd.c \
-	free.c \
-	utils.c
+SRCS = srcs/main.c \
+	srcs/microshell.c \
+	srcs/cd.c \
+	srcs/free.c \
+	srcs/utils.c
 
 CC = gcc
 

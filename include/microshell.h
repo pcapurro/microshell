@@ -14,7 +14,7 @@
 int     main(const int argc, const char **argv, char **envp);
 void    ft_error(void);
 
-int		**ft_create_fds(const char **str);
+int     **ft_create_fds(const char **str);
 char	**ft_create_args(const char **str);
 void	ft_exec_cmd(char **args, char **envp);
 void	ft_execute(const char **args, char **envp);

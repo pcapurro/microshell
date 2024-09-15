@@ -1,4 +1,4 @@
-#include "microshell.h"
+#include "../include/microshell.h"
 
 int	**ft_create_fds(const char **str)
 {
@@ -68,6 +68,7 @@ void	ft_exec_cmd(char **args, char **envp)
 			ft_putstr_fd("error: cannot execute ", 2);
 			ft_putstr_fd(args[0], 2);
 			ft_putstr_fd("\n", 2);
+			
 			exit(1);
 		}
 	}
@@ -106,9 +107,11 @@ void	ft_execute(const char **args, char **envp)
 				if (i != 0)
 					dup2(fds[i - 1][0], 0), close(fds[i - 1][0]);
 				dup2(fds[i][1], 1), close(fds[i][1]);
+				
 				new_args = ft_create_args(args + j);
 				ft_exec_cmd(new_args, envp);
 				ft_free_tab(new_args);
+				
 				while (args[j] != NULL && strcmp(args[j], "|") != 0 && strcmp(args[j], ";") != 0)
 					j++;
 				j = j + 1;
@@ -116,9 +119,11 @@ void	ft_execute(const char **args, char **envp)
 			}
 			dup2(fds[i - 1][0], 0), close(fds[i - 1][0]);
 			dup2(saved_stdout, 1);
+			
 			new_args = ft_create_args(args + j);
 			ft_exec_cmd(new_args, envp);
 			ft_free_tab(new_args);
+			
 			close(saved_stdout);
 			ft_free_fds(fds);
 		}
